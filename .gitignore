@@ -1,4 +1,3 @@
 .DS_Store
-
-# Ignore until actions and branches are ready
-.github/
+client.py
+requirements.txt
