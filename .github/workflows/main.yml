@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo to gh-pages
+    - name: Checkout repository to gh-pages branch
       uses: actions/checkout@v2
       with:
         ref: gh-pages
@@ -25,15 +25,16 @@ jobs:
     - name: Grab script from master and install packages
       run: |
         git fetch
-        git checkout master -- client.py requirements.txt
+        git checkout origin/master -- client.py requirements.txt
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
     - name: Execute script
       run: python client.py
 
-    - name: Commit to repo
+    - name: Cleanup and commit to repository
       run: |
+        git rm -rf client.py requirements.txt
         git config --local user.name 'jstnf/ucrapi.justinf.dev'
         git config --local user.email 'ucrapi.justinf.dev[bot]@justinf.dev'
         git add .
