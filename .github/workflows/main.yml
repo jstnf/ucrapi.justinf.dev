@@ -24,6 +24,7 @@ jobs:
 
     - name: Grab script from master and install packages
       run: |
+        git fetch
         git checkout master -- client.py requirements.txt
         python -m pip install --upgrade pip
         pip install -r requirements.txt
