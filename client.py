@@ -6,13 +6,15 @@ import time
 import threading
 
 baseurl = 'https://registrationssb.ucr.edu/StudentRegistrationSsb/ssb'
+basedir = 'api/v1'
 
 def generate_output_folder():
   """
   Create output folder
   """
-  if not os.path.isdir('output/v1'):
-    os.mkdir('output/v1')
+  if not os.path.isdir('api'):
+    os.mkdir('api')
+    os.mkdir(basedir)
 
 def index_terms(terms):
   final_terms = []
@@ -27,7 +29,7 @@ def index_terms(terms):
     if (len(subjects) == 0):
       continue
     final_terms.append(term)
-  with open('output/v1/terms.json', 'w') as terms_file:
+  with open(f'{basedir}/terms.json', 'w') as terms_file:
     terms_file.write(json.dumps(final_terms))
 
 def thread_exec(session: requests.Session, terms):
@@ -50,11 +52,11 @@ def process_term(session: requests.Session, desc: str, code: str):
     return
 
   # Conditions for updating the repo with the current data
-  term_output_dir = f'output/v1/{code}'
+  term_output_dir = f'{basedir}/{code}'
   if not os.path.isdir(term_output_dir) or not view_only:
     print(f'[{threading.current_thread().name}] Grabbing data for term {desc} ({len(subjects)} subjects). Force update? {"No" if view_only else "Yes"}')
     current_time = round(time.time() * 1000)
-    temp_dir = f'output/v1/{code}-{current_time}'
+    temp_dir = f'{basedir}/{code}-{current_time}'
     os.mkdir(temp_dir)
     with open(f'{temp_dir}/subjects.json', 'w') as f:
       f.write(json.dumps(subjects))
@@ -118,7 +120,7 @@ def main():
   generate_output_folder()
   session = requests.Session()
 
-  with open('output/v1/last_update.json', 'w') as last_update_file:
+  with open(f'{basedir}/last_update.json', 'w') as last_update_file:
     data = {
       'last_update': round(time.time() * 1000)
     }

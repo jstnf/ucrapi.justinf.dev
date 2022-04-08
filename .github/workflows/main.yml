@@ -1,0 +1,41 @@
+name: Grab Class Data from UCR
+
+on:
+  push:
+    branches: [ master ]
+  schedule:
+    - cron: '* 0,12 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo to gh-pages
+      uses: actions/checkout@v2
+      with:
+        ref: gh-pages
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+        architecture: 'x64'
+
+    - name: Grab script from master and install packages
+      run: |
+        git checkout master -- client.py requirements.txt
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Execute script
+      run: python client.py
+
+    - name: Commit to repo
+      run: |
+        git config --local user.name 'jstnf/ucrapi.justinf.dev'
+        git config --local user.email 'ucrapi.justinf.dev[bot]@justinf.dev'
+        git add .
+        # "echo" returns true so the build success, even if no changed files
+        git commit -m 'Update class data' || echo
+        git push
