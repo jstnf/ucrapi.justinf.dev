@@ -53,7 +53,9 @@ def process_term(session: requests.Session, desc: str, code: str):
 
   # Conditions for updating the repo with the current data
   term_output_dir = f'{basedir}/{code}'
-  if not os.path.isdir(term_output_dir) or not view_only:
+  # 4/8/22 - design change - always update ALL terms, regardless of read only status
+  # if not os.path.isdir(term_output_dir) or not view_only:
+  if True:
     print(f'[{threading.current_thread().name}] Grabbing data for term {desc} ({len(subjects)} subjects). Force update? {"No" if view_only else "Yes"}')
     current_time = round(time.time() * 1000)
     temp_dir = f'{basedir}/{code}-{current_time}'
